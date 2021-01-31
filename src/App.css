@@ -28,6 +28,24 @@
   color: #61dafb;
 }
 
+.create-task-modal {
+  width: 370px !important;
+}
+.input-wrap .rs-form-control-wrapper {
+  width: 100%;
+}
+.input-wrap .task-input {
+  width: 100%;
+}
+.input-wrap .rs-form-control-wrapper > .rs-input {
+  width: 100%;
+}
+.view__tasks .tasks-borders {
+  border: solid #d5d5d5;
+  border-width: 0px;
+  border-right-width: 1.5px;
+  border-left-width: 1.5px;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
