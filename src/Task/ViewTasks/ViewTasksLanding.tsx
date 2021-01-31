@@ -16,8 +16,8 @@ interface Props {
   handleTaskState: any;
 }
 
-const TASK_NOT_DELETED = 'Task not deleted'
-const TASK_NOT_UPDATED = 'Task not updated'
+const TASK_NOT_DELETED = 'Task not deleted';
+const TASK_NOT_UPDATED = 'Task not updated';
 
 const ViewTasksLanding: React.FC<Props> = (props: Props) => {
   const { taskState } = props;
@@ -27,8 +27,8 @@ const ViewTasksLanding: React.FC<Props> = (props: Props) => {
   const [tasks, setTasks] = useState(groupByData(pathOr([], TASK_STATE_PATH, taskState)));
 
   useEffect(() => {
-      setTasks(groupByData(pathOr([], TASK_STATE_PATH, taskState)));
-      // eslint-disable-next-line
+    setTasks(groupByData(pathOr([], TASK_STATE_PATH, taskState)));
+    // eslint-disable-next-line
   }, [pathOr([], TASK_STATE_PATH, taskState)]);
 
   const [deleteLoading, setDeleteLoading] = useState({});
@@ -146,13 +146,10 @@ const ViewTasksLanding: React.FC<Props> = (props: Props) => {
                           <div className={'mt-1'} style={{ textAlign: 'right' }}>
                             <Button
                               appearance={'subtle'}
+                              onClick={() => handleDelete(pathOr(index, ['id'], singleTask))}
                               loading={pathOr(false, [pathOr(index, ['id'], singleTask)], deleteLoading)}
                             >
-                              <Icon
-                                onClick={() => handleDelete(pathOr(index, ['id'], singleTask))}
-                                icon={'trash'}
-                                style={{ fontSize: '24px', cursor: 'pointer' }}
-                              />
+                              <Icon icon={'trash'} style={{ fontSize: '24px', cursor: 'pointer' }} />
                             </Button>
                           </div>
                         </Panel>
