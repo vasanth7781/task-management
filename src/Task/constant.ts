@@ -1,5 +1,9 @@
 export const NEW_TASK_MODAL_PATH = ['isTaskModal']
 export const TAKS_FORM_STATE = ['newTask']
+export const TASK_LIST_NAME = 'taskList'
+export const USERS_LIST_NAME ='usersLists'
+export const TASK_STATE_PATH = [TASK_LIST_NAME]
+export const USERS_STATE_PATH = [USERS_LIST_NAME]
 export const HIGH_PRIORITY_TASK_NAME = 'High'
 export const LOW_PRIORITY_TASK_NAME = 'Low'
 export const MEDIUM_PRIORITY_TASK_NAME = 'Medium'

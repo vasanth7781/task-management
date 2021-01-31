@@ -1,3 +1,4 @@
+import { ERROR, SUCCESS } from "constant";
 import { always, cond, equals, sort, sortWith,ascend,prop,pathOr,descend, map, keys, values, join, includes } from "ramda"
 import { SORT_BY_NEWEST, SORT_BY_OLDEST, TAKS_PIRORITY_MAPPER } from "./constant"
 
@@ -38,6 +39,6 @@ export const convJsonToBodyData = (json: any) => {
     return join('&', listOfTasksData)
 }
 
-export const chkSuccesResponse = (response: any) => includes('success', values(response))
-export const chkErrorResponse = (response: any) => includes('error', values(response))
+export const chkSuccesResponse = (response: any) => includes(SUCCESS, values(response))
+export const chkErrorResponse = (response: any) => includes(ERROR, values(response))
 

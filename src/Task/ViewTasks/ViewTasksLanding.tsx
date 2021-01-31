@@ -1,30 +1,35 @@
 import { equals, filter, findIndex, groupBy, head, lensPath, map, omit, pathOr, propEq, set, toLower } from 'ramda';
 import React, { useEffect, useState } from 'react';
-import { Button, Divider, Icon, Notification, Panel } from 'rsuite';
+import { Button, Icon, Notification, Panel } from 'rsuite';
 import styled from 'styled-components';
-import { TAKS_PIRORITY_MAPPER, TASK_PRIORITYS } from 'Task/constant';
+import { TAKS_PIRORITY_MAPPER, TASK_PRIORITYS, TASK_STATE_PATH, USERS_STATE_PATH } from 'Task/constant';
 import { chkErrorResponse, chkSuccesResponse, convJsonToBodyData, handleSortSelection } from 'Task/taskUtilities';
 import SortTaskLanding from './SortTasks';
 import TaskPanelWrapper from './TaskPanelWrapper';
-// @ts-ignore
 import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import withTaskHooks from 'hooks/withTaskHooks';
+import { DELETE_TASK, LIST_TASKS, UPDATE_TASK } from 'hooks/constant';
+import { ERROR, SUCCESS } from 'constant';
 
 interface Props {
   taskState: any;
   handleTaskState: any;
 }
 
+const TASK_NOT_DELETED = 'Task not deleted'
+const TASK_NOT_UPDATED = 'Task not updated'
+
 const ViewTasksLanding: React.FC<Props> = (props: Props) => {
   const { taskState } = props;
   const groupByData = groupBy((x: any) => pathOr('', ['priority'], x));
   const { taskCall } = withTaskHooks();
 
-  const [tasks, setTasks] = useState(groupByData(pathOr([], ['taskLists'], taskState)));
+  const [tasks, setTasks] = useState(groupByData(pathOr([], TASK_STATE_PATH, taskState)));
 
   useEffect(() => {
-    setTasks(groupByData(pathOr([], ['taskLists'], taskState)));
-  }, [pathOr([], ['taskLists'], taskState)]);
+      setTasks(groupByData(pathOr([], TASK_STATE_PATH, taskState)));
+      // eslint-disable-next-line
+  }, [pathOr([], TASK_STATE_PATH, taskState)]);
 
   const [deleteLoading, setDeleteLoading] = useState({});
 
@@ -34,20 +39,20 @@ const ViewTasksLanding: React.FC<Props> = (props: Props) => {
     );
   };
   const handleTaskUpdate = (updatedTask: any) => {
-    taskCall('taskUpdate')(
+    taskCall(UPDATE_TASK)(
       convJsonToBodyData({ taskid: Number(pathOr('', ['id'], updatedTask)), ...omit(['id'], updatedTask) })
     )
       .then((res: any) => {
         if (chkErrorResponse(res)) {
-          Notification['error']({
-            title: 'Task not updated',
+          Notification[SUCCESS]({
+            title: TASK_NOT_UPDATED,
             description: <span>{pathOr('', ['error'], res)}</span>
           });
         }
       })
       .catch((err: any) => {
-        Notification['error']({
-          title: 'Task not updated',
+        Notification[ERROR]({
+          title: TASK_NOT_UPDATED,
           description: <span>Somthing went wrong</span>
         });
       });
@@ -56,10 +61,10 @@ const ViewTasksLanding: React.FC<Props> = (props: Props) => {
     if (pathOr('', ['destination', 'droppableId'], value)) {
       const getFilteredData = filter(
         (task: any) => equals(pathOr('', ['id'], task), String(pathOr('', ['source', 'index'], value))),
-        pathOr([], ['taskLists'], taskState)
+        pathOr([], TASK_STATE_PATH, taskState)
       );
       const indexOfPushedTask = findIndex(propEq('id', String(pathOr('', ['source', 'index'], value))))(
-        pathOr([], ['taskLists'], taskState)
+        pathOr([], TASK_STATE_PATH, taskState)
       );
 
       const updateTask = set(
@@ -67,9 +72,9 @@ const ViewTasksLanding: React.FC<Props> = (props: Props) => {
         TAKS_PIRORITY_MAPPER[pathOr('', ['destination', 'droppableId'], value)],
         head(getFilteredData)
       );
-      const updateValue = set(lensPath([indexOfPushedTask]), updateTask, pathOr([], ['taskLists'], taskState));
+      const updateValue = set(lensPath([indexOfPushedTask]), updateTask, pathOr([], TASK_STATE_PATH, taskState));
       handleTaskUpdate(updateTask);
-      props.handleTaskState(['taskLists'], updateValue);
+      props.handleTaskState(TASK_STATE_PATH, updateValue);
       return setTasks(groupByData(updateValue));
     }
     return;
@@ -77,13 +82,13 @@ const ViewTasksLanding: React.FC<Props> = (props: Props) => {
 
   const handleDelete = (taskId: any) => {
     setDeleteLoading({ [taskId]: true });
-    taskCall('taskDelete')(convJsonToBodyData({ taskid: Number(taskId) }))
+    taskCall(DELETE_TASK)(convJsonToBodyData({ taskid: Number(taskId) }))
       .then((res: any) => {
         if (chkSuccesResponse(res)) {
-          taskCall('listTasks')({}).then((res: any) => {
-            props.handleTaskState(['taskLists'], pathOr([], ['tasks'], res));
+          taskCall(LIST_TASKS)({}).then((res: any) => {
+            props.handleTaskState(TASK_STATE_PATH, pathOr([], ['tasks'], res));
             setTasks(groupByData(pathOr([], ['tasks'], res)));
-            Notification['success']({
+            Notification[SUCCESS]({
               title: 'Task deleted',
               description: <span>Task deleted successfully</span>
             });
@@ -91,16 +96,16 @@ const ViewTasksLanding: React.FC<Props> = (props: Props) => {
           });
         }
         if (chkErrorResponse(res)) {
-          Notification['error']({
-            title: 'Task not deleted',
+          Notification[ERROR]({
+            title: TASK_NOT_DELETED,
             description: <span>{pathOr('', ['error'], res)}</span>
           });
           setDeleteLoading({ [taskId]: false });
         }
       })
       .catch((err: any) => {
-        Notification['error']({
-          title: 'Task not deleted',
+        Notification[ERROR]({
+          title: TASK_NOT_DELETED,
           description: <span>Somthing went wrong</span>
         });
         setDeleteLoading({ [taskId]: false });
@@ -135,7 +140,7 @@ const ViewTasksLanding: React.FC<Props> = (props: Props) => {
                             key={Number(pathOr(index, ['id'], singleTask))}
                             index={Number(pathOr(index, ['id'], singleTask))}
                             data={singleTask}
-                            users={pathOr([], ['usersLists'], taskState)}
+                            users={pathOr([], USERS_STATE_PATH, taskState)}
                           />
 
                           <div className={'mt-1'} style={{ textAlign: 'right' }}>

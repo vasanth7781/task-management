@@ -1,7 +1,7 @@
 import { pathOr } from 'ramda';
 import React from 'react';
 import { Avatar, SelectPicker } from 'rsuite';
-import { TAKS_FORM_STATE } from 'Task/constant';
+import { TAKS_FORM_STATE, USERS_STATE_PATH } from 'Task/constant';
 import { mappedUserData } from 'Task/taskUtilities';
 
 interface Props {
@@ -13,7 +13,7 @@ const ListUsersForTaskSelect: React.FC<Props> = (props: Props) => {
   const { handleTaskState, taskState } = props;
   return (
     <SelectPicker
-      data={mappedUserData(pathOr([], ['usersLists'], taskState))}
+      data={mappedUserData(pathOr([], USERS_STATE_PATH, taskState))}
       style={{ width: '100%' }}
       placeholder="Select User"
       renderMenuItem={(label: any, item: any) => {

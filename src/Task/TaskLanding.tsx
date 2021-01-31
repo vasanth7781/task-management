@@ -7,6 +7,8 @@ import CreateTaskLanding from 'Task/CreateTask'
 import withTaskHooks from 'hooks/withTaskHooks'
 import withUserHooks from 'hooks/withUserHooks'
 import { Loader } from 'rsuite'
+import { TASK_LIST_NAME, USERS_LIST_NAME } from './constant'
+import { LIST_TASKS, LIST_USERS } from 'hooks/constant'
 
 interface Props{
     taskState: any
@@ -22,11 +24,11 @@ const TaskLanding: React.FC<Props> = (props: Props) => {
     }
     useEffect(() => {
         // @ts-ignore
-        const tasks = taskCall('listTasks')()
-        const users = userCall('listUsers')()
+        const tasks = taskCall(LIST_TASKS)()
+        const users = userCall(LIST_USERS)()
         Promise.all([tasks, users]).then((res: any) => {
             const [tasksResponse, usersResponse] = res
-            handleTaskStateChange([],{taskLists:pathOr([],['tasks'],tasksResponse),usersLists:pathOr([],['users'],usersResponse)})
+            handleTaskStateChange([],{[TASK_LIST_NAME]:pathOr([],['tasks'],tasksResponse),[USERS_LIST_NAME]:pathOr([],['users'],usersResponse)})
             setLoading(false)
         }).catch((err: any) => {
             setLoading(false)
