@@ -53,7 +53,7 @@ const ViewTasksLanding: React.FC<Props> = (props: Props) => {
       .catch((err: any) => {
         Notification[ERROR]({
           title: TASK_NOT_UPDATED,
-          description: <span>Somthing went wrong</span>
+          description: <span>Something went wrong</span>
         });
       });
   };
@@ -106,7 +106,7 @@ const ViewTasksLanding: React.FC<Props> = (props: Props) => {
       .catch((err: any) => {
         Notification[ERROR]({
           title: TASK_NOT_DELETED,
-          description: <span>Somthing went wrong</span>
+          description: <span>Something went wrong</span>
         });
         setDeleteLoading({ [taskId]: false });
       });

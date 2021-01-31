@@ -1,5 +1,6 @@
 export const NEW_TASK_MODAL_PATH = ['isTaskModal']
-export const TAKS_FORM_STATE = ['newTask']
+export const NEW_TASK_NAME = 'newTask'
+export const TAKS_FORM_STATE = [NEW_TASK_NAME]
 export const TASK_LIST_NAME = 'taskList'
 export const USERS_LIST_NAME ='usersLists'
 export const TASK_STATE_PATH = [TASK_LIST_NAME]

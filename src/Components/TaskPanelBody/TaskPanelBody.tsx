@@ -1,3 +1,4 @@
+import { formatTimeStamp } from 'momentUtilities';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -12,7 +13,7 @@ const TaskPanelBody: React.FC<Props> = (props: Props) => {
         <h6>{props.message}</h6>
       </div>
       <div className={'align-self-start'}>
-        <span>{props.createdAt}</span>
+        <span>Created on :<b>{formatTimeStamp(props.createdAt)}</b></span>
       </div>
     </TaskPanelBodyWrapper>
   );

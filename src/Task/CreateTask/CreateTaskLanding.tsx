@@ -5,9 +5,11 @@ import { lensPath, pathOr, set } from 'ramda';
 import React, { useState } from 'react';
 import { compose } from 'recompose';
 import { Button, Modal, Notification } from 'rsuite';
-import { NEW_TASK_MODAL_PATH, TAKS_FORM_STATE, TASK_STATE_PATH } from 'Task/constant';
+import { createTaskSchema } from 'services/task/task.schema';
+import { NEW_TASK_MODAL_PATH, NEW_TASK_NAME, TAKS_FORM_STATE, TASK_STATE_PATH } from 'Task/constant';
 import CreateTasksFormsLanding from 'Task/CreateTask/CreateTasksFormsLanding';
 import { chkErrorResponse, chkSuccesResponse, convJsonToBodyData } from 'Task/taskUtilities';
+import schemValidationCheck from 'schemaValidation';
 
 interface Props {
   taskState: any;
@@ -23,7 +25,12 @@ const CreateTaskLanding: React.FC<Props> = (props: Props) => {
   const [loading, setLoading] = useState(false);
 
   const handleTaskAdd = () => {
-    setLoading(true);
+      const schemaValidation = createTaskSchema.check(pathOr({assigned_to:'',message:'',priority:''}, TAKS_FORM_STATE, taskState))
+      handleTaskState([ERROR,NEW_TASK_NAME],schemaValidation)
+      if (schemValidationCheck(schemaValidation)) {
+          return;
+      }
+      setLoading(true);
     taskCall(CREATE_TASK)(convJsonToBodyData(pathOr({}, TAKS_FORM_STATE, taskState)))
       .then((res: any) => {
         if (chkSuccesResponse(res)) {
