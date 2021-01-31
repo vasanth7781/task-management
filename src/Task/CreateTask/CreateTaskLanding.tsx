@@ -30,7 +30,8 @@ const CreateTaskLanding: React.FC<Props> = (props: Props) => {
           taskCall(LIST_TASKS)({}).then((res: any) => {
             const updatedTaskState = compose<any, any>(
               set(lensPath(TASK_STATE_PATH), pathOr([], ['tasks'], res)),
-              set(lensPath(NEW_TASK_MODAL_PATH), false)
+                set(lensPath(NEW_TASK_MODAL_PATH), false),
+              set(lensPath(TAKS_FORM_STATE),{})
             )(taskState);
             handleTaskState([], updatedTaskState);
             Notification[SUCCESS]({
